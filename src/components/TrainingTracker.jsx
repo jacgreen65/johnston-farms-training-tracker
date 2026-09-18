@@ -74,6 +74,27 @@ const TrainingTracker = () => {
     ? employees.filter(e => e.crew === selectedCrew)
     : employees;
 
+  // Parse CSV line (handles quoted values with commas)
+  const parseCSVLine = (line) => {
+    const result = [];
+    let current = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (char === ',' && !insideQuotes) {
+        result.push(current.trim().replace(/^"|"$/g, ''));
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    result.push(current.trim().replace(/^"|"$/g, ''));
+    return result;
+  };
+
   // Handle sheet ID setup
   const handleSetSheetId = async () => {
     if (!sheetId.trim()) {
@@ -86,15 +107,56 @@ const TrainingTracker = () => {
     setStatusMessage('Connecting to Google Sheet...');
 
     try {
-      // For now, just load sample data
-      // In production, you'd call Google Sheets API here
-      setEmployees(sampleEmployees);
-      setTrainings(sampleTrainings);
+      // Fetch Employees sheet (gid=0 is the first sheet)
+      const employeesUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+      const employeesResponse = await fetch(employeesUrl);
+
+      if (!employeesResponse.ok) {
+        throw new Error('Could not fetch Employees sheet. Check your Sheet ID and make sure the sheet is shared.');
+      }
+
+      const employeesText = await employeesResponse.text();
+      const employeesLines = employeesText.trim().split('\n');
+
+      // Parse employees CSV (skip header row)
+      const parsedEmployees = [];
+      for (let i = 1; i < employeesLines.length; i++) {
+        const [id, name, crew] = parseCSVLine(employeesLines[i]);
+        if (id && name) {
+          parsedEmployees.push({ id, name, crew });
+        }
+      }
+
+      // Fetch Training sheet (gid=1 is the second sheet)
+      const trainingUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1`;
+      const trainingResponse = await fetch(trainingUrl);
+
+      let parsedTrainings = [];
+      if (trainingResponse.ok) {
+        const trainingText = await trainingResponse.text();
+        const trainingLines = trainingText.trim().split('\n');
+
+        // Parse training CSV (skip header row)
+        for (let i = 1; i < trainingLines.length; i++) {
+          const [training] = parseCSVLine(trainingLines[i]);
+          if (training) {
+            parsedTrainings.push(training);
+          }
+        }
+      }
+
+      if (parsedEmployees.length === 0) {
+        throw new Error('No employees found. Make sure your Employees sheet has data in columns A (ID), B (Name), C (Crew).');
+      }
+
+      setEmployees(parsedEmployees);
+      setTrainings(parsedTrainings.length > 0 ? parsedTrainings : sampleTrainings);
       setSetupMode(false);
-      setStatusMessage('✓ Connected! Ready to log training.');
+      setStatusMessage(`✓ Connected! Loaded ${parsedEmployees.length} employees.`);
       setTimeout(() => setStatusMessage(''), 3000);
     } catch (error) {
       setStatusMessage(`Error: ${error.message}`);
+      console.error('Sheet connection error:', error);
     } finally {
       setIsLoading(false);
     }
