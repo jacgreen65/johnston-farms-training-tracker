@@ -89,8 +89,8 @@ const TrainingTracker = () => {
     setStatusMessage('Connecting to Google Sheet...');
 
     try {
-      // Fetch Employees sheet (gid=0 is the first sheet)
-      const employeesUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
+      // Fetch Employees sheet
+      const employeesUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1602418034`;
       const employeesResponse = await fetch(employeesUrl);
 
       if (!employeesResponse.ok) {
@@ -109,8 +109,8 @@ const TrainingTracker = () => {
         }
       }
 
-      // Fetch Training sheet (gid=1 is the second sheet)
-      const trainingUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1`;
+      // Fetch Training sheet
+      const trainingUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=1907158439`;
       const trainingResponse = await fetch(trainingUrl);
 
       let parsedTrainings = [];
