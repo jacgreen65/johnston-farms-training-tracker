@@ -24,25 +24,7 @@ const TrainingTracker = () => {
   const [reportTraining, setReportTraining] = useState('');
   const [reportData, setReportData] = useState([]);
 
-  // Sample data - full employee list
-  const sampleEmployees = [
-    { id: '03602', name: 'ALI ALCALA LARA', crew: 'WAREHOUSE - BELL PEPPER' },
-    { id: '03107', name: 'SAUL ALCANTARA', crew: 'WAREHOUSE-FORKLIFT NITE CREW' },
-    { id: '03571', name: 'BRANDO ALCARAZ', crew: 'WAREHOUSE-FORKLIFT NITE CREW' },
-    { id: '01591', name: 'CARINA ALCARAZ', crew: 'WAREHOUSE - GENERAL' },
-    { id: '03518', name: 'VALENTIN ALCARAZ', crew: 'WAREHOUSE - NITE CREW' },
-    { id: '03531', name: 'JESUS AMADOR', crew: 'WAREHOUSE - NITE CREW' },
-    { id: '03605', name: 'JESUS AMBRIZ', crew: 'FIELD - IRRG & GENERAL' },
-    { id: '03368', name: 'CARLOS ANGUIANO', crew: 'WAREHOUSE - BELL PEPPER' },
-    { id: '03369', name: 'TERESA ANGUIANO', crew: 'WAREHOUSE - BELL PEPPER' },
-    { id: '03593', name: 'JOSE ANTONIO ANGELES', crew: 'WAREHOUSE - GENERAL' },
-    { id: '03574', name: 'RAYMUNDO ANGELES', crew: 'WAREHOUSE - NITE CREW' },
-    { id: '03559', name: 'PEDRO ANTUNA', crew: 'FIELD - HARVEST CREW' },
-    { id: '03633', name: 'RICARDO APARICIO', crew: 'WAREHOUSE - GENERAL' },
-    { id: '03547', name: 'LUIS AQUINO', crew: 'WAREHOUSE - NITE CREW' },
-    { id: '03604', name: 'GABRIEL ARANDA', crew: 'FIELD - IRRG & GENERAL' },
-  ];
-
+  // Sample trainings as fallback
   const sampleTrainings = [
     'ALLERGEN',
     'ATV',
