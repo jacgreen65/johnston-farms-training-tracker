@@ -353,7 +353,6 @@ const TrainingTracker = () => {
               value={selectedCrew}
               onChange={(e) => {
                 setSelectedCrew(e.target.value);
-                setSelectedEmployees([]);
               }}
               className="form-input"
               style={{ maxWidth: '300px' }}
